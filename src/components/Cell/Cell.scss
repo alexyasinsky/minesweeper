@@ -1,0 +1,8 @@
+.cell {
+  width: 17px;
+  height: 17px;
+  &__unset {
+    background-image: url(/src/assets/minesweeper-sprites_9TPZzv3.png);
+    background-position: 0px -50px;
+  }
+}
