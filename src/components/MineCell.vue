@@ -12,14 +12,14 @@ import {mapGetters, mapMutations} from "vuex";
 export default {
   name: "MineCell",
   props: [
-      'size',
       'x',
-      'y'
+      'y',
   ],
 
   data() {
     return {
       element: 'closed',
+      isClosed: true,
     }
   },
 
@@ -28,7 +28,6 @@ export default {
 
     openCell(x, y) {
       this.addGamerStep({x:x,y:y});
-      console.log(this.getGamerSteps);
       const isMined = this.checkMining(x, y);
       if (isMined) {
         this.element = 'mine_activated';
@@ -89,7 +88,8 @@ export default {
     },
 
     getCellsToCheck(x, y) {
-      const cells = [];
+      let cells = [];
+      const steps = [...this.getGamerSteps];
       if (x - 1 > 0 && y - 1 > 0) {
         cells.push({x: x - 1, y: y - 1});
       }
@@ -114,7 +114,13 @@ export default {
       if (x + 1 <= this.getFieldSize && y + 1 <= this.getFieldSize) {
         cells.push({x: x + 1, y: y + 1});
       }
-
+      // cells.forEach(cell => {
+      //   console.log(steps.find(step => step.x !== cell.x || step.y !== cell.y));
+      // })
+      cells = cells.map(cell => {
+        if (steps.find(step => step.x !== cell.x || step.y !== cell.y)) return cell;
+      })
+      console.log(cells);
       return cells;
     }
   },

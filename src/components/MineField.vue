@@ -1,15 +1,19 @@
 
 <template >
-  <div class="row" v-for="row in fieldSize">
+  <div 
+    class="row" 
+    v-for="row in fieldSize"
+    :key="row" 
+    >
     <mine-cell
         v-for="column in getColumns"
-        :variant="column.variant"
-        :y="row"
         :x="column.x"
+        :y="row"
+        :key="column.key"
     />
   </div>
 </template>
-
+// поправить key
 <script>
   import MineCell from "./MineCell.vue";
 
@@ -29,14 +33,16 @@
       ...mapActions('mines', ['generateMinesCoords'])
     },
     computed: {
-      ...mapGetters('mines', ['getMinesCoords']),
+      ...mapGetters('mines', ['getMinesCoords', 'getGamerSteps']),
       ...mapGetters('game', ['getFieldSize']),
       getColumns() {
         const columns = [];
         for (let i = 1; i <= this.fieldSize; i++) {
           columns.push({
               variant: 'eight',
-              x: i
+              x: i,
+              key: Math.floor(Math.random()*100000)
+              // поправить key
             }
           )
         }
@@ -48,7 +54,6 @@
     },
     mounted() {
       this.fieldSize = this.getFieldSize;
-      // console.log(this.getMinesCoords)
     }
   }
 </script>

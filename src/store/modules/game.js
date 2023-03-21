@@ -9,6 +9,15 @@ export default {
     gamerSteps: []
   },
 
+  getters: {
+    getFieldSize: state => {
+      return state.fieldSize;
+    },
+    getGamerSteps: state => {
+      return state.gamerSteps;
+    }
+  },
+
   actions: {
 
   },
@@ -22,13 +31,5 @@ export default {
     }
   },
 
-  getters: {
-    getFieldSize: state => {
-      return state.fieldSize;
-    },
-    getGamerSteps: state => {
-      return state.gamerSteps;
-    }
-  }
 
 }
