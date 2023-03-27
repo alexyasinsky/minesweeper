@@ -9,7 +9,8 @@
         v-for="column in getColumns"
         :x="column.x"
         :y="row"
-        :key="column.key"
+        :key="`x${column.x}y${row}`"
+        :id="`x${column.x}y${row}`"
     />
   </div>
 </template>
@@ -30,19 +31,15 @@
       }
     },
     methods: {
-      ...mapActions('mines', ['generateMinesCoords'])
+      ...mapActions('mines', ['generateMinedCellsIds'])
     },
     computed: {
-      ...mapGetters('mines', ['getMinesCoords', 'getGamerSteps']),
       ...mapGetters('game', ['getFieldSize']),
       getColumns() {
         const columns = [];
         for (let i = 1; i <= this.fieldSize; i++) {
           columns.push({
-              variant: 'eight',
               x: i,
-              key: Math.floor(Math.random()*100000)
-              // поправить key
             }
           )
         }
@@ -50,7 +47,7 @@
       }
     },
     created() {
-      this.generateMinesCoords(this.getFieldSize);
+      this.generateMinedCellsIds(this.getFieldSize);
     },
     mounted() {
       this.fieldSize = this.getFieldSize;

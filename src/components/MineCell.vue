@@ -14,6 +14,7 @@ export default {
   props: [
       'x',
       'y',
+      'id'
   ],
 
   data() {
@@ -27,8 +28,8 @@ export default {
     ...mapMutations('game', ['addGamerStep']),
 
     openCell(x, y) {
-      this.addGamerStep({x:x,y:y});
-      const isMined = this.checkMining(x, y);
+      const isMined = this.checkMining(this.id);
+      this.addGamerStep(`x${x}y${y}`);
       if (isMined) {
         this.element = 'mine_activated';
         return
@@ -67,20 +68,21 @@ export default {
         return;
       }
       this.element = 'empty';
+      // cellsAround.forEach(cell => {
+      //   this.openCell()
+      // })
     },
 
-    checkMining(x, y) {
-      return [...this.getMinesCoords].find(coord => {
-        const left = JSON.stringify(coord);
-        const right = `{\"x\":${x},\"y\":${y}}`;
-        return left === right;
+    checkMining(cell) {
+      return [...this.getMinedCellsIds].find(id => {
+        return id === cell
       })
     },
 
     checkMinesAround(cells) {
       let count = 0;
       for (let cell of cells) {
-        if (this.checkMining(cell.x, cell.y)) {
+        if (this.checkMining(cell)) {
           count++
         }
       }
@@ -91,42 +93,38 @@ export default {
       let cells = [];
       const steps = [...this.getGamerSteps];
       if (x - 1 > 0 && y - 1 > 0) {
-        cells.push({x: x - 1, y: y - 1});
+        cells.push(`x${x - 1}y${y - 1}`);
       }
       if (y - 1 > 0) {
-        cells.push({x: x, y: y - 1});
+        cells.push(`x${x}y${y - 1}`);
       }
       if (x + 1 <= this.getFieldSize && y - 1 > 0) {
-        cells.push({x: x + 1, y: y - 1});
+        cells.push(`x${x + 1}y${y - 1}`);
       }
       if (x - 1 > 0) {
-        cells.push({x: x - 1, y: y});
+        cells.push(`x${x - 1}y${y}`);
       }
       if (x + 1 <= this.getFieldSize) {
-        cells.push({x: x + 1, y: y});
+        cells.push(`x${x + 1}y${y}`);
       }
       if (x - 1 > 0 && y + 1 <= this.getFieldSize) {
-        cells.push({x: x - 1, y: y + 1});
+        cells.push(`x${x - 1}y${y + 1}`);
       }
       if (y + 1 <= this.getFieldSize) {
-        cells.push({x: x, y: y + 1});
+        cells.push(`x${x}y${y + 1}`);
       }
       if (x + 1 <= this.getFieldSize && y + 1 <= this.getFieldSize) {
-        cells.push({x: x + 1, y: y + 1});
+        cells.push(`x${x + 1}y${y + 1}`);
       }
-      // cells.forEach(cell => {
-      //   console.log(steps.find(step => step.x !== cell.x || step.y !== cell.y));
-      // })
-      cells = cells.map(cell => {
-        if (steps.find(step => step.x !== cell.x || step.y !== cell.y)) return cell;
+      cells = cells.filter(cell => {
+        if (!steps.includes(cell)) return cell
       })
-      console.log(cells);
       return cells;
     }
   },
 
   computed: {
-    ...mapGetters('mines', ['getMinesCoords']),
+    ...mapGetters('mines', ['getMinedCellsIds']),
     ...mapGetters('game', [
         'getFieldSize',
         'getGamerSteps'

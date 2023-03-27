@@ -5,35 +5,32 @@ export default {
   namespaced: true,
 
   state: {
-    minesCoords: []
+    minedCellsIds: []
   },
 
   actions: {
-    generateMinesCoords({commit}, fieldSize) {
-      const coords = [];
-      while (coords.length < fieldSize) {
+    generateMinedCellsIds({commit}, fieldSize) {
+      const ids = [];
+      while (ids.length < fieldSize) {
         const x =  Math.floor(Math.random() * fieldSize + 1);
         const y =  Math.floor(Math.random() * fieldSize + 1);
-        if (!coords.find(coord => JSON.stringify(coord) === `{\"x\":${x},\"y\":${y}}`)) {
-          coords.push({
-            x: x,
-            y: y
-          })
+        if (!ids.find(id => id === `x${x}y${y}`)) {
+          ids.push(`x${x}y${y}`)
         }
       }
-      commit('setMinesCoords', coords);
+      commit('setMinedCellsIds', ids);
     },
   },
 
   mutations: {
-    setMinesCoords(state, payload) {
-      return state.minesCoords.push(...payload)
+    setMinedCellsIds(state, payload) {
+      return state.minedCellsIds.push(...payload)
     }
   },
 
   getters: {
-    getMinesCoords: state => {
-      return state.minesCoords;
+    getMinedCellsIds: state => {
+      return state.minedCellsIds;
     }
   }
 
