@@ -31,10 +31,11 @@
       }
     },
     methods: {
-      ...mapActions('mines', ['generateMinedCellsIds'])
+      ...mapActions('cells', ['generateCells'])
     },
     computed: {
       ...mapGetters('game', ['getFieldSize']),
+      ...mapGetters('cells', ['getCells']),
       getColumns() {
         const columns = [];
         for (let i = 1; i <= this.fieldSize; i++) {
@@ -47,10 +48,11 @@
       }
     },
     created() {
-      this.generateMinedCellsIds(this.getFieldSize);
+      this.generateCells(this.getFieldSize);
     },
     mounted() {
       this.fieldSize = this.getFieldSize;
+      console.log(this.getCells);
     }
   }
 </script>

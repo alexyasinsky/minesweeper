@@ -7,7 +7,6 @@
 
 import MineField from "./components/MineField.vue";
 import {mapMutations} from "vuex";
-//check
 export default {
   components: {
     MineField

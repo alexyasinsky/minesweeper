@@ -1,77 +1,82 @@
 <template>
   <div
     :class="getCellClass"
-    @click="openCell(x,y)"
+    @click="openCell(this.id)"
   >
   </div>
 </template>
 
 <script>
-import {mapGetters, mapMutations} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 
 export default {
   name: "MineCell",
   props: [
-      'x',
-      'y',
       'id'
   ],
 
   data() {
     return {
-      element: 'closed',
       isClosed: true,
+      cell: {},
+      isMined: false,
     }
   },
 
   methods: {
     ...mapMutations('game', ['addGamerStep']),
+    ...mapMutations('cells', [
+      'setCellClassName'
+    ]),
+    ...mapActions('cells', ['openCell']),
+    // openCellll() {
+      // this.openCell('this.id');
 
-    openCell(x, y) {
-      const isMined = this.checkMining(this.id);
-      this.addGamerStep(`x${x}y${y}`);
-      if (isMined) {
-        this.element = 'mine_activated';
-        return
-      }
-      const cellsAround = this.getCellsToCheck(x, y);
-      const minesAroundAmount = this.checkMinesAround(cellsAround);
-      if (minesAroundAmount) {
-        switch (minesAroundAmount) {
-          case 1:
-            this.element = 'one';
-            break
-          case 2:
-            this.element = 'two';
-            break
-          case 3:
-            this.element = 'three';
-            break
-          case 4:
-            this.element = 'four';
-            break
-          case 5:
-            this.element = 'five';
-            break
-          case 6:
-            this.element = 'six';
-            break
-          case 7:
-            this.element = 'seven';
-            break
-          case 8:
-            this.element = 'eight';
-            break
-          default:
-            break
-        }
-        return;
-      }
-      this.element = 'empty';
+      // const isMined = this.checkMining(cell);
+      // this.addGamerStep(cell);
+      // if (isMined) {
+      //   this.element = 'mine_activated';
+      //   return
+      // }
+      // const {x, y} = this.getCoordsFromId(cell);
+      // const cellsAround = this.getCellsToCheck(x, y);
+      // const minesAroundAmount = this.checkMinesAround(cellsAround);
+      // if (minesAroundAmount) {
+      //   switch (minesAroundAmount) {
+      //     case 1:
+      //       this.element = 'one';
+      //       break
+      //     case 2:
+      //       this.element = 'two';
+      //       break
+      //     case 3:
+      //       this.element = 'three';
+      //       break
+      //     case 4:
+      //       this.element = 'four';
+      //       break
+      //     case 5:
+      //       this.element = 'five';
+      //       break
+      //     case 6:
+      //       this.element = 'six';
+      //       break
+      //     case 7:
+      //       this.element = 'seven';
+      //       break
+      //     case 8:
+      //       this.element = 'eight';
+      //       break
+      //     default:
+      //       break
+      //   }
+      //   return;
+      // }
+      // this.element = 'empty';
       // cellsAround.forEach(cell => {
-      //   this.openCell()
+      //   this.openCell(cell);
       // })
-    },
+    // },
 
     checkMining(cell) {
       return [...this.getMinedCellsIds].find(id => {
@@ -88,6 +93,8 @@ export default {
       }
       return count;
     },
+
+    
 
     getCellsToCheck(x, y) {
       let cells = [];
@@ -124,19 +131,24 @@ export default {
   },
 
   computed: {
-    ...mapGetters('mines', ['getMinedCellsIds']),
+    ...mapGetters('cells', [
+      'getCellMineStatus',
+      'getCellOpeningStatus',
+      'getCellClassName'
+    ]),
     ...mapGetters('game', [
         'getFieldSize',
         'getGamerSteps'
     ]),
     getCellClass() {
-      return `cell cell_small cell__${this.element}`
+      return `cell cell_small cell_${this.getCellClassName(this.id)}`
     }
   },
 
   mounted() {
+    this.isMined = this.getCellMineStatus(this.id);
+  },
 
-  }
 
 }
 </script>
@@ -148,52 +160,52 @@ export default {
       height: 17px;
       width: 17px;
     }
-    &__closed {
+    &_closed {
       background-position: 0 34px;
     }
-    &__empty {
+    &_empty {
       background-position: -17px 34px;
     }
-    &__flag {
+    &_flag {
       background-position: -34px 34px;
     }
-    &__question_closed {
+    &_question_closed {
       background-position: -51px 34px;
     }
-    &__question {
+    &_question {
       background-position: -68px 34px;
     }
-    &__mine {
+    &_mine {
       background-position: -85px 34px;
     }
-    &__mine_activated {
+    &_mine_activated {
       background-position: -102px 34px;
     }
-    &__mine_deactivated {
+    &_mine_deactivated {
       background-position: -119px 34px;
     }
-    &__one {
+    &_one {
       background-position: 0 17px;
     }
-    &__two {
+    &_two {
       background-position: -17px 17px;
     }
-    &__three {
+    &_three {
       background-position: -34px 17px;
     }
-    &__four {
+    &_four {
       background-position: -51px 17px;
     }
-    &__five {
+    &_five {
       background-position: -68px 17px;
     }
-    &__six {
+    &_six {
       background-position: -85px 17px;
     }
-    &__seven {
+    &_seven {
       background-position: -102px 17px;
     }
-    &__eight {
+    &_eight {
       background-position: -119px 17px;
     }
 
