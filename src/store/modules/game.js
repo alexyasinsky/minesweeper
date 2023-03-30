@@ -1,4 +1,4 @@
-
+import cells from './cells';
 
 export default {
 
@@ -6,30 +6,21 @@ export default {
 
   state: {
     fieldSize: 0,
-    gamerSteps: []
   },
 
-  getters: {
-    getFieldSize: state => {
-      return state.fieldSize;
-    },
-    getGamerSteps: state => {
-      return state.gamerSteps;
-    }
-  },
-
-  actions: {
-
+  modules: {
+    cells
   },
 
   mutations: {
     setFieldSize(state, payload) {
       return state.fieldSize = payload
     },
-    addGamerStep(state, payload) {
-      return state.gamerSteps.push(payload);
-    }
   },
 
-
+  getters: {
+    getFieldSize: state => {
+      return state.fieldSize;
+    },
+  }
 }

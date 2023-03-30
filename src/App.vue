@@ -1,7 +1,6 @@
 <template>
   <mine-field/>
 </template>
-
 <script>
 
 
@@ -11,23 +10,14 @@ export default {
   components: {
     MineField
   },
-  data() {
-    return {
-
-    }
-  },
 
   methods: {
-    ...mapMutations('game', [
-      'setFieldSize'
-    ])
+    ...mapMutations('game', ['setFieldSize'])
   },
 
   created() {
     this.setFieldSize(10);
   }
-
-
 }
 
 </script>

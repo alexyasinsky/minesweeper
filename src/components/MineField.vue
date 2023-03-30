@@ -2,19 +2,16 @@
 <template >
   <div 
     class="row" 
-    v-for="row in fieldSize"
+    v-for="row in this.getFieldSize"
     :key="row" 
     >
     <mine-cell
         v-for="column in getColumns"
-        :x="column.x"
-        :y="row"
         :key="`x${column.x}y${row}`"
         :id="`x${column.x}y${row}`"
     />
   </div>
 </template>
-// поправить key
 <script>
   import MineCell from "./MineCell.vue";
 
@@ -27,18 +24,17 @@
     },
     data() {
       return {
-        fieldSize: 0
       }
     },
     methods: {
-      ...mapActions('cells', ['generateCells'])
+      ...mapActions('game/cells', ['generateCells'])
     },
     computed: {
       ...mapGetters('game', ['getFieldSize']),
-      ...mapGetters('cells', ['getCells']),
+      ...mapGetters('game/cells', ['getCells']),
       getColumns() {
         const columns = [];
-        for (let i = 1; i <= this.fieldSize; i++) {
+        for (let i = 1; i <= this.getFieldSize; i++) {
           columns.push({
               x: i,
             }
@@ -48,11 +44,9 @@
       }
     },
     created() {
-      this.generateCells(this.getFieldSize);
+      this.generateCells();
     },
     mounted() {
-      this.fieldSize = this.getFieldSize;
-      console.log(this.getCells);
     }
   }
 </script>
