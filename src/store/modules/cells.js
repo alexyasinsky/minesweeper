@@ -61,7 +61,8 @@ export default {
                 id: `x${j}y${i}`,
                 isMined: false,
                 isClosed: true,
-                className: 'closed'
+                className: 'closed',
+                isMarked: false,
               }
           }
         }
@@ -116,6 +117,11 @@ export default {
         closedCellsAround.forEach(cell => {
           dispatch('openCell', cell)
         });
+      },
+      markCell({commit}, id) {
+        commit('game/incrementMarkedCellsCount', null, { root: true });
+        commit('setCellMarkedStatus', id);
+        commit('setCellClassName', {id, className: 'marked'});
       }
     },
 
@@ -129,6 +135,9 @@ export default {
       setCellClassName(state, payload) {
         return state.cells[payload.id].className = payload.className;
       },
+      setCellMarkedStatus(state, payload) {
+        return state.cells[payload].isMarked = true;
+      }
     },
 
     getters: {

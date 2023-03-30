@@ -1,6 +1,7 @@
 
-<template >
-  <div 
+<template>
+  <div class="wrapper">
+    <div 
     class="row" 
     v-for="row in this.getFieldSize"
     :key="row" 
@@ -11,6 +12,8 @@
         :id="`x${column.x}y${row}`"
     />
   </div>
+  </div>
+  
 </template>
 <script>
   import MineCell from "./MineCell.vue";
@@ -27,11 +30,11 @@
       }
     },
     methods: {
-      ...mapActions('game/cells', ['generateCells'])
+      ...mapActions('game', ['generateCells'])
     },
     computed: {
       ...mapGetters('game', ['getFieldSize']),
-      ...mapGetters('game/cells', ['getCells']),
+      ...mapGetters('game', ['getCells']),
       getColumns() {
         const columns = [];
         for (let i = 1; i <= this.getFieldSize; i++) {
@@ -52,6 +55,10 @@
 </script>
 
 <style lang="scss" scoped>
+
+.wrapper {
+  border: 3px inset gainsboro;
+}
   .row {
     display: flex;
   }

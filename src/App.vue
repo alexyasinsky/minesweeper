@@ -1,14 +1,21 @@
 <template>
-  <mine-field/>
+  <div class="wrapper">
+    <myHeader/>
+    <mine-field /> 
+  </div>
+    
 </template>
 <script>
 
 
 import MineField from "./components/MineField.vue";
+import MyHeader from "./components/MyHeader.vue";
 import {mapMutations} from "vuex";
+
 export default {
   components: {
-    MineField
+    MineField,
+    MyHeader
   },
 
   methods: {
@@ -23,5 +30,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+  .wrapper {
+    background-color: gainsboro;
+    width: min-content;
+    padding: 10px;
+  }
 </style>

@@ -2,6 +2,7 @@
   <div
     :class="getCellClass"
     @click="openCell(this.id)"
+    @contextmenu.prevent="rightClickHandler"
   >
   </div>
 </template>
@@ -14,11 +15,19 @@ export default {
   props: ['id'],
 
   methods: {
-    ...mapActions('game/cells', ['openCell']),
+    ...mapActions('game', [
+      'openCell',
+      'markCell',
+      'checkHowManyMarksAreLeft'
+    ]),
+    rightClickHandler() {
+      this.markCell(this.id);
+      this.checkHowManyMarksAreLeft();
+    }
   },
 
   computed: {
-    ...mapGetters('game/cells', ['getCellClassName']),
+    ...mapGetters('game', ['getCellClassName']),
     getCellClass() {
       return `cell cell_small cell_${this.getCellClassName(this.id)}`
     }
@@ -39,7 +48,7 @@ export default {
     &_empty {
       background-position: -17px 34px;
     }
-    &_flag {
+    &_marked {
       background-position: -34px 34px;
     }
     &_question_closed {
