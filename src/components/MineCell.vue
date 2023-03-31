@@ -66,28 +66,28 @@ export default {
     &_mine_deactivated {
       background-position: -119px 34px;
     }
-    &_one {
+    &_1 {
       background-position: 0 17px;
     }
-    &_two {
+    &_2 {
       background-position: -17px 17px;
     }
-    &_three {
+    &_3 {
       background-position: -34px 17px;
     }
-    &_four {
+    &_4 {
       background-position: -51px 17px;
     }
-    &_five {
+    &_5 {
       background-position: -68px 17px;
     }
-    &_six {
+    &_6 {
       background-position: -85px 17px;
     }
-    &_seven {
+    &_7 {
       background-position: -102px 17px;
     }
-    &_eight {
+    &_8 {
       background-position: -119px 17px;
     }
 

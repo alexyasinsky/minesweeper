@@ -92,7 +92,6 @@ export default {
         }
       }
       ids.forEach(id => {
-        console.log(id);
         cells[id].isMined = true;
       })
       commit('setCells', cells);
@@ -106,26 +105,7 @@ export default {
       const closedCellsAround = getClosedCellsAround(id, state.cells, state.fieldSize);
       const minesAroundAmount = checkMinesAround(closedCellsAround, state.cells);
       if (minesAroundAmount) {
-        switch (minesAroundAmount) {
-          case 1:
-            return commit('setCellClassName', {id, className: 'one'});
-          case 2:
-            return commit('setCellClassName', {id, className: 'two'});
-          case 3:
-            return commit('setCellClassName', {id, className: 'three'});
-          case 4:
-            return commit('setCellClassName', {id, className: 'four'});
-          case 5:
-            return commit('setCellClassName', {id, className: 'five'});
-          case 6:
-            return commit('setCellClassName', {id, className: 'six'});
-          case 7:
-            return commit('setCellClassName', {id, className: 'seven'});
-          case 8:
-            return commit('setCellClassName', {id, className: 'eight'});
-          default:
-            break
-        }
+        return commit('setCellClassName', {id, className: minesAroundAmount});
       }
       commit('setCellClassName', {id, className: 'empty'});
       closedCellsAround.forEach(cell => {

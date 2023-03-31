@@ -1,6 +1,6 @@
 
 <template>
-  <div class="wrapper">
+  <div class="field">
     <div 
     class="row" 
     v-for="row in this.getFieldSize"
@@ -56,9 +56,9 @@
 
 <style lang="scss" scoped>
 
-.wrapper {
-  border: 3px inset gainsboro;
-}
+  .field {
+    border: 3px inset rgb(224, 224, 224);
+  }
   .row {
     display: flex;
   }

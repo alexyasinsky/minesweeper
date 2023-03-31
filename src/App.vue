@@ -23,7 +23,7 @@ export default {
   },
 
   created() {
-    this.setFieldSize(10);
+    this.setFieldSize(40);
   }
 }
 
@@ -31,8 +31,9 @@ export default {
 
 <style lang="scss" scoped>
   .wrapper {
-    background-color: gainsboro;
+    background-color: rgb(192, 192, 192);
     width: min-content;
-    padding: 10px;
+    padding: 5px;
+    border: 3px outset rgb(224, 224, 224);
   }
 </style>
