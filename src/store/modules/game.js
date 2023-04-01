@@ -58,7 +58,8 @@ export default {
     fieldSize: 0,
     markedCellsCount: 0,
     gameStatus: 'stop',
-    isGamerWon: undefined
+    isGamerWon: undefined,
+    stopWatchCounter: 12
   },
 
   // modules: {
@@ -184,5 +185,9 @@ export default {
     getCellClassName: state => id => {
       return state.cells[id].className
     },
+
+    getStopwatchCounter: state => {
+      return state.stopWatchCounter
+    }
   }
 }
