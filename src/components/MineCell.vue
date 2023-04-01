@@ -18,7 +18,7 @@ export default {
     ...mapActions('game', [
       'openCell',
       'markCell',
-      'checkHowManyMarksAreLeft'
+      'checkHowManyMarksAreLeft',
     ]),
     rightClickHandler() {
       this.markCell(this.id);

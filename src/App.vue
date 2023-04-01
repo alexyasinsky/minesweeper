@@ -19,11 +19,11 @@ export default {
   },
 
   methods: {
-    ...mapMutations('game', ['setFieldSize'])
+    ...mapMutations('game', ['setFieldSize']),
   },
 
   created() {
-    this.setFieldSize(40);
+    this.setFieldSize(10);
   }
 }
 

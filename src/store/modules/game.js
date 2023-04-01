@@ -57,9 +57,10 @@ export default {
     cells: {},
     fieldSize: 0,
     markedCellsCount: 0,
-    gameStatus: 'stop',
+    gameStatus: 'beforePlaying',
     isGamerWon: undefined,
-    stopWatchCounter: 12
+    stopwatchCount: 0,
+    stopwatchId: 0
   },
 
   // modules: {
@@ -67,6 +68,7 @@ export default {
   // },
 
   actions: {
+
     generateCells({dispatch, state}) {
       const cells = {};
       for (let i = 1; i <= state.fieldSize; i++) {
@@ -94,6 +96,7 @@ export default {
       }
       ids.forEach(id => {
         cells[id].isMined = true;
+        console.log(id)
       })
       commit('setCells', cells);
     },
@@ -101,7 +104,11 @@ export default {
     openCell({commit, state, dispatch}, id) {
       commit('setCellCloseStatus', id);
       if (state.cells[id].isMined) {
-        return commit('setCellClassName', {id, className: 'mine_activated'})
+        commit('setIsGamerWon', false);
+        dispatch('openAllMinedCells');
+        dispatch('stopGame');
+        commit('setGameStatus', 'gamerLoosed');
+        return commit('setCellClassName', {id, className: 'mine_activated'});
       }
       const closedCellsAround = getClosedCellsAround(id, state.cells, state.fieldSize);
       const minesAroundAmount = checkMinesAround(closedCellsAround, state.cells);
@@ -113,10 +120,26 @@ export default {
         dispatch('openCell', cell)
       });
     },
-    markCell({commit}, id) {
-      commit('incrementMarkedCellsCount');
-      commit('setCellMarkedStatus', id);
-      commit('setCellClassName', {id, className: 'marked'});
+
+    openAllMinedCells({commit, state}){
+      for (let cell in state.cells) {
+        if (state.cells[cell].isClosed && state.cells[cell].isMined) {
+          commit('setCellClassName', {id: state.cells[cell].id, className: 'mine'});
+        }
+      }
+    },
+
+    markCell({commit, state}, id) {
+      if (state.cells[id].isMarked) {
+        commit('decrementMarkedCellsCount');
+        commit('toggleCellMarkedStatus', id);
+        commit('setCellClassName', {id, className: 'closed'});
+      } else {
+        commit('incrementMarkedCellsCount');
+        commit('toggleCellMarkedStatus', id);
+        commit('setCellClassName', {id, className: 'marked'});
+      }
+
     },
 
     checkHowManyMarksAreLeft({dispatch, state}) {
@@ -124,27 +147,69 @@ export default {
         dispatch('checkWinning');
       }
     },
-    checkWinning({commit, state}) {
-      commit('stopGame');
+
+    checkWinning({commit, state, dispatch}) {
+      dispatch('stopGame');
+      debugger
       for (let cell in state.cells) {
         if (state.cells[cell].isMarked !== state.cells[cell].isMined) {
-          debugger
+          dispatch('openAllMinedCells');
+          commit('setGameStatus', 'gamerLoosed');
           return commit('setIsGamerWon', false);
         }
       }
+      commit('setGameStatus', 'gamerWon');
       return commit('setIsGamerWon', true);
-    }
+    },
+
+    startGame({commit, state}) {
+      if (state.isGamerWon === undefined && state.stopwatchId === 0) {
+        const id = setInterval(()=> {
+          return commit('tickStopwatchCount');
+        }, 1000);
+        commit('setStopwatchId', id);
+        commit('setGameStatus', 'playing');
+      }
+    },
+
+    stopGame({commit, state}) {
+      commit('setGameStatus', 'paused');
+      clearInterval(state.stopwatchId);
+      commit('setStopwatchId', 0);
+    },
+
+    startNewGame({commit, dispatch}) {
+      commit('setIsGamerWon', undefined);
+      commit('setGameStatus', 'beforePlaying');
+      commit('refreshStopwatchCount');
+      commit('setStopwatchId', 0);
+      dispatch('generateCells');
+      dispatch('startGame');
+    },
+
   },
 
   mutations: {
+    setGameStatus(state, payload) {
+      return state.gameStatus = payload;
+    },
+    tickStopwatchCount(state) {
+      return state.stopwatchCount++;
+    },
+    setStopwatchId(state, payload) {
+      return state.stopwatchId = payload;
+    },
     setFieldSize(state, payload) {
       return state.fieldSize = payload
     },
     incrementMarkedCellsCount(state) {
       return state.markedCellsCount++;
     },
-    stopGame(state) {
-      return state.gameStatus = 'stop';
+    decrementMarkedCellsCount(state) {
+      return state.markedCellsCount--;
+    },
+    refreshStopwatchCount(state) {
+      return state.stopwatchCount = 0;
     },
     setCells(state, payload) {
       return state.cells = payload;
@@ -155,8 +220,8 @@ export default {
     setCellClassName(state, payload) {
       return state.cells[payload.id].className = payload.className;
     },
-    setCellMarkedStatus(state, payload) {
-      return state.cells[payload].isMarked = true;
+    toggleCellMarkedStatus(state, payload) {
+      return state.cells[payload].isMarked = !state.cells[payload].isMarked;
     },
     setIsGamerWon(state, payload) {
       return state.isGamerWon = payload;
@@ -164,30 +229,33 @@ export default {
   },
 
   getters: {
+
     getFieldSize: state => {
       return state.fieldSize;
     },
+
     getMarkedCellsCount: state => {
       return state.markedCellsCount
     },
+
     getCells: state => {
       return state.cells;
     },
-
-    getCellMineStatus: state => id => {
-      return state.cells[id].isMined;
-    }, 
-
-    getCellCloseStatus: state => id => {
-      return state.cells[id].isClosed;
-    }, 
 
     getCellClassName: state => id => {
       return state.cells[id].className
     },
 
-    getStopwatchCounter: state => {
-      return state.stopWatchCounter
+    getStopwatchCount: state => {
+      return state.stopwatchCount
+    },
+
+    getGameStatus: state => {
+      return state.gameStatus;
+    },
+
+    getIsGamerWon: state => {
+      return state.isGamerWon;
     }
   }
 }
