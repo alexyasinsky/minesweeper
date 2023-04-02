@@ -1,33 +1,87 @@
 <template>
   <div
     :class="getCellClass"
-    @click="openCell(this.id)"
-    @contextmenu.prevent="rightClickHandler"
+    @click="leftMouseClickHandler"
+    @contextmenu.prevent="rightMouseClickHandler"
   >
   </div>
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 
 export default {
   name: "MineCell",
   props: ['id'],
 
   methods: {
-    ...mapActions('game', [
-      'openCell',
-      'markCell',
-      'checkHowManyMarksAreLeft',
+    ...mapMutations('game', [
+        'setIsGamerWon',
+        'setGameStatus',
+        'decrementMarkedCellsCount',
+        'incrementMarkedCellsCount',
     ]),
-    rightClickHandler() {
-      this.markCell(this.id);
-      this.checkHowManyMarksAreLeft();
+    ...mapMutations('cells', [
+      'setCellClassName',
+      'toggleCellMarkingStatus'
+    ]),
+    ...mapActions('game', ['stopGame']),
+    ...mapActions('cells', [
+      'openCell',
+      'openAllMinedCells',
+      'checkMarking'
+    ]),
+    rightMouseClickHandler() {
+      if (!this.getCellMarkingStatus(this.id)) {
+        this.incrementMarkedCellsCount();
+        this.toggleCellMarkingStatus(this.id);
+        this.setCellClassName({id: this.id, className: 'marked'});
+        this.checkWinning();
+      } else {
+        this.decrementMarkedCellsCount();
+        this.toggleCellMarkingStatus(this.id);
+        this.setCellClassName({id: this.id, className: 'closed'});
+      }
+    },
+    checkWinning() {
+      if (this.checkHowManyMarksAreLeft()) {
+        this.stopGame();
+        this.checkMarking();
+        if (this.getIsMarkingCorrect) {
+          this.setGameStatus('gamerWon');
+          this.setIsGamerWon(true);
+        } else {
+          this.openAllMinedCells();
+          this.setGameStatus('gamerLoosed');
+          this.setIsGamerWon(false);
+        }
+      }
+    },
+
+    checkHowManyMarksAreLeft() {
+      return this.getMarkedCellsCount - this.getFieldSize === 0
+    },
+
+    leftMouseClickHandler() {
+      this.openCell(this.id);
+      const className = this.getCellClassName(this.id);
+      if (className === 'mine_activated') {
+        this.setIsGamerWon(false);
+        this.openAllMinedCells();
+        this.stopGame();
+        this.setGameStatus('gamerLoosed');
+      }
     }
   },
 
   computed: {
-    ...mapGetters('game', ['getCellClassName']),
+    ...mapGetters('game', ['getMarkedCellsCount',]),
+    ...mapGetters('cells', [
+      'getCellClassName',
+      'getCellMarkingStatus',
+      'getFieldSize',
+      'getIsMarkingCorrect'
+    ]),
     getCellClass() {
       return `cell cell_small cell_${this.getCellClassName(this.id)}`
     }

@@ -9,7 +9,7 @@
 
 
 import MineField from "./components/MineField.vue";
-import MyHeader from "./components/MyHeader.vue";
+import MyHeader from "./components/TheHeader.vue";
 import {mapMutations} from "vuex";
 
 export default {
@@ -19,7 +19,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations('game', ['setFieldSize']),
+    ...mapMutations('cells', ['setFieldSize']),
   },
 
   created() {

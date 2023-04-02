@@ -16,8 +16,14 @@ export default {
     ...mapActions('game', [
         'startGame',
         'stopGame',
-        'startNewGame'
-    ])
+        'unsetGameStateToDefault',
+    ]),
+    ...mapActions('cells', ['generateCells']),
+    startNewGame() {
+      this.generateCells();
+      this.unsetGameStateToDefault();
+      this.startGame();
+    }
   },
   computed: {
     ...mapGetters('game', [
