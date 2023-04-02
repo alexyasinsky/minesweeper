@@ -25,10 +25,10 @@
     },
     computed: {
       ...mapGetters('game', [
-        'getFieldSize',
         'getMarkedCellsCount',
         'getStopwatchCount'
       ]),
+      ...mapGetters('cells', ['getFieldSize']),
     }
   }
 </script>

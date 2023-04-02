@@ -27,14 +27,11 @@
     name: "MineField",
     components: {MineCell},
     methods: {
-      ...mapActions('game', [
-          'generateCells',
-          'startGame'
-      ])
+      ...mapActions('game', ['startGame']),
+      ...mapActions('cells', ['generateCells',])
     },
     computed: {
-      ...mapGetters('game', ['getFieldSize']),
-      ...mapGetters('game', ['getCells']),
+      ...mapGetters('cells', ['getFieldSize']),
     },
     created() {
       this.generateCells();

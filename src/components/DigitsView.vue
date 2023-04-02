@@ -1,8 +1,8 @@
 <template>
   <div class="digit__box">
     <div
-        v-for="digit of getDigitsArray"
-        :key="Math.floor(Math.random() * 10000)"
+        v-for="(digit, ind) of getDigitsArray"
+        :key="ind"
         :class="`digit digit_${digit}`"
     >
     </div>

@@ -1,162 +1,119 @@
-function getCoordsFromId(id) {
-  let coordArray = id.match(/\d+/g);
-  return {
-    x: +coordArray[0],
-    y: +coordArray[1]
-  }
-}
-
-function getClosedCellsAround(id, allCells, fieldSize) {
-  const {x, y} = getCoordsFromId(id);
-  let closedCellsAround = [];
-  if (x - 1 > 0 && y - 1 > 0 && allCells[`x${x - 1}y${y - 1}`].isClosed === true) {
-    closedCellsAround.push(`x${x - 1}y${y - 1}`);
-  }
-  if (y - 1 > 0 && allCells[`x${x}y${y - 1}`].isClosed === true) {
-    closedCellsAround.push(`x${x}y${y - 1}`);
-  }
-  if (x + 1 <= fieldSize && y - 1 > 0 && allCells[`x${x + 1}y${y - 1}`].isClosed === true) {
-    closedCellsAround.push(`x${x + 1}y${y - 1}`);
-  }
-  if (x - 1 > 0 && allCells[`x${x - 1}y${y}`].isClosed === true) {
-    closedCellsAround.push(`x${x - 1}y${y}`);
-  }
-  if (x + 1 <= fieldSize && allCells[`x${x + 1}y${y}`].isClosed === true) {
-    closedCellsAround.push(`x${x + 1}y${y}`);
-  }
-  if (x - 1 > 0 && y + 1 <= fieldSize && allCells[`x${x - 1}y${y + 1}`].isClosed === true) {
-    closedCellsAround.push(`x${x - 1}y${y + 1}`);
-  }
-  if (y + 1 <= fieldSize && allCells[`x${x}y${y + 1}`].isClosed === true) {
-    closedCellsAround.push(`x${x}y${y + 1}`);
-  }
-  if (x + 1 <= fieldSize && y + 1 <= fieldSize && allCells[`x${x + 1}y${y + 1}`].isClosed === true) {
-    closedCellsAround.push(`x${x + 1}y${y + 1}`);
-  }
-
-  return closedCellsAround;
-}
-
-function checkMinesAround(closedCells, allCells) {
-  let count = 0;
-  for (let cell of closedCells) {
-    if (allCells[cell].isMined) {
-      count++
-    }
-  }
-  return count;
-}
+import {getClosedCellsAround, checkMinesAround} from "./tools/tools.js";
 
 export default {
-   
-    namespaced: true,
+
+  namespaced: true,
+
+  state: {
+    fieldSize: 0,
     cells: {},
+    isMarkingCorrect: true,
+  },
 
-    actions: {
-      generateCells({dispatch, rootState}) {
-        const cells = {};
-        for (let i = 1; i <= rootState.game.fieldSize; i++) {
-          for (let j = 1; j <= rootState.game.fieldSize; j++) {
-            cells[`x${j}y${i}`] = {
-                id: `x${j}y${i}`,
-                isMined: false,
-                isClosed: true,
-                className: 'closed',
-                isMarked: false,
-              }
+  actions: {
+
+    generateCells({dispatch, state}) {
+      const cells = {};
+      for (let i = 1; i <= state.fieldSize; i++) {
+        for (let j = 1; j <= state.fieldSize; j++) {
+          cells[`x${j}y${i}`] = {
+            id: `x${j}y${i}`,
+            isMined: false,
+            isClosed: true,
+            className: 'closed',
+            isMarked: false,
           }
         }
-        dispatch('mineCells', cells)
-      },
-  
-      mineCells({commit, rootState}, cells) {
-        const ids = [];
-        while (ids.length < rootState.game.fieldSize) {
-          const x =  Math.floor(Math.random() * rootState.game.fieldSize + 1);
-          const y =  Math.floor(Math.random() * rootState.game.fieldSize + 1);
-          if (!ids.find(id => id === `x${x}y${y}`)) {
-            ids.push(`x${x}y${y}`)
-          }
+      }
+      dispatch('mineCells', cells)
+    },
+
+    mineCells({commit, state}, cells) {
+      const ids = [];
+      while (ids.length < state.fieldSize) {
+        const x = Math.floor(Math.random() * state.fieldSize + 1);
+        const y = Math.floor(Math.random() * state.fieldSize + 1);
+        if (!ids.find(id => id === `x${x}y${y}`)) {
+          ids.push(`x${x}y${y}`)
         }
-        ids.forEach(id => {
-          cells[id].isMined = true;
-        })
-        commit('setCells', cells);
-      },
-  
-      openCell({commit, state, rootState, dispatch}, id) {
-        commit('setCellCloseStatus', id);
-        if (state.cells[id].isMined) {
-          return commit('setCellClassName', {id, className: 'mine_activated'})
+      }
+      ids.forEach(id => {
+        cells[id].isMined = true;
+      })
+      commit('setCells', cells);
+    },
+
+    openCell({commit, state, dispatch}, id) {
+      commit('toggleCellCloseStatus', id);
+      if (state.cells[id].isMined) {
+        return commit('setCellClassName', {id, className: 'mine_activated'});
+      }
+      const closedCellsAround = getClosedCellsAround(id, state.cells, state.fieldSize);
+      const minesAroundAmount = checkMinesAround(closedCellsAround, state.cells);
+      if (minesAroundAmount) {
+        return commit('setCellClassName', {id, className: minesAroundAmount});
+      }
+      commit('setCellClassName', {id, className: 'empty'});
+      closedCellsAround.forEach(cell => {
+        dispatch('openCell', cell)
+      });
+    },
+
+    checkMarking({commit, state}) {
+      for (let cell in state.cells) {
+        if (state.cells[cell].isMarked !== state.cells[cell].isMined) {
+          commit('toggleIsMarkingCorrect');
         }
-        const closedCellsAround = getClosedCellsAround(id, state.cells, rootState.game.fieldSize);
-        const minesAroundAmount = checkMinesAround(closedCellsAround, state.cells);
-        if (minesAroundAmount) {
-          switch (minesAroundAmount) {
-            case 1:
-              return commit('setCellClassName', {id, className: 'one'});
-            case 2:
-              return commit('setCellClassName', {id, className: 'two'});
-            case 3:
-              return commit('setCellClassName', {id, className: 'three'});
-            case 4:
-              return commit('setCellClassName', {id, className: 'four'});
-            case 5:
-              return commit('setCellClassName', {id, className: 'five'});
-            case 6:
-              return commit('setCellClassName', {id, className: 'six'});
-            case 7:
-              return commit('setCellClassName', {id, className: 'seven'});
-            case 8:
-              return commit('setCellClassName', {id, className: 'eight'});
-            default:
-              break
-          }
-        }
-        commit('setCellClassName', {id, className: 'empty'});
-        closedCellsAround.forEach(cell => {
-          dispatch('openCell', cell)
-        });
-      },
-      markCell({commit}, id) {
-        commit('game/incrementMarkedCellsCount', null, { root: true });
-        commit('setCellMarkedStatus', id);
-        commit('setCellClassName', {id, className: 'marked'});
       }
     },
 
-    mutations: {
-      setCells(state, payload) {
-        return state.cells = payload;
-      },
-      setCellCloseStatus(state, payload) {
-        return state.cells[payload].isClosed = false;
-      },
-      setCellClassName(state, payload) {
-        return state.cells[payload.id].className = payload.className;
-      },
-      setCellMarkedStatus(state, payload) {
-        return state.cells[payload].isMarked = true;
+    openAllMinedCells({commit, state}) {
+      for (let cell in state.cells) {
+        if (state.cells[cell].isClosed && state.cells[cell].isMined) {
+          commit('setCellClassName', {id: state.cells[cell].id, className: 'mine'});
+        }
       }
     },
 
-    getters: {
-      
-      getCells: state => {
-        return state.cells;
-      },
+  },
 
-      getCellMineStatus: state => id => {
-        return state.cells[id].isMined;
-      }, 
+  mutations: {
 
-      getCellCloseStatus: state => id => {
-        return state.cells[id].isClosed;
-      }, 
+    toggleIsMarkingCorrect(state) {
+      return state.isMarkingCorrect = !state.isMarkingCorrect;
+    },
+    setFieldSize(state, payload) {
+      return state.fieldSize = payload
+    },
+    setCells(state, payload) {
+      return state.cells = payload;
+    },
+    toggleCellCloseStatus(state, payload) {
+      return state.cells[payload].isClosed = !state.cells[payload].isClosed;
+    },
+    setCellClassName(state, payload) {
+      return state.cells[payload.id].className = payload.className;
+    },
+    toggleCellMarkingStatus(state, payload) {
+      return state.cells[payload].isMarked = !state.cells[payload].isMarked;
+    },
+  },
 
-      getCellClassName: state => id => {
-        return state.cells[id].className
-      },
+  getters: {
+
+    getFieldSize: state => {
+      return state.fieldSize;
+    },
+
+    getCellMarkingStatus: state => id => {
+      return state.cells[id].isMarked;
+    },
+
+    getCellClassName: state => id => {
+      return state.cells[id].className
+    },
+    getIsMarkingCorrect: state => {
+      return state.isMarkingCorrect;
     }
-
+  }
 }
