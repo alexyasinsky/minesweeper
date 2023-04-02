@@ -7,17 +7,16 @@ export default {
     gameStatus: 'beforePlaying',
     isGamerWon: undefined,
     stopwatchCount: 0,
-    stopwatchId: 0,
-    counterWebWorker: undefined
+    stopwatchWebWorker: undefined
   },
 
   actions: {
 
     startGame({commit, state}) {
-      if (state.isGamerWon === undefined && state.stopwatchId === 0) {
-        commit('setCounterWebWorker', new Worker('src/store/modules/tools/stopwatch-web-worker.js'));
-        state.counterWebWorker.postMessage(state.stopwatchCount);
-        state.counterWebWorker.onmessage = () => {
+      if (state.isGamerWon === undefined && state.stopwatchWebWorker === undefined) {
+        commit('setStopwatchWebWorker', new Worker('src/store/modules/tools/stopwatch-web-worker.js'));
+        state.stopwatchWebWorker.postMessage(state.stopwatchCount);
+        state.stopwatchWebWorker.onmessage = () => {
           return commit('tickStopwatchCount');
       }
       commit('setGameStatus', 'playing');
@@ -26,16 +25,14 @@ export default {
 
     stopGame({commit, state}) {
       commit('setGameStatus', 'paused');
-      state.counterWebWorker.terminate();
-      commit('setCounterWebWorker', undefined);
-      commit('setStopwatchId', 0);
+      state.stopwatchWebWorker.terminate();
+      commit('setStopwatchWebWorker', undefined);
     },
 
     unsetGameStateToDefault({commit}) {
       commit('setIsGamerWon', undefined);
       commit('setGameStatus', 'beforePlaying');
       commit('refreshStopwatchCount');
-      commit('setStopwatchId', 0);
     },
 
   },
@@ -47,10 +44,6 @@ export default {
 
     tickStopwatchCount(state) {
       return state.stopwatchCount++;
-    },
-
-    setStopwatchId(state, payload) {
-      return state.stopwatchId = payload;
     },
 
     incrementMarkedCellsCount(state) {
@@ -69,8 +62,8 @@ export default {
       return state.isGamerWon = payload;
     },
 
-    setCounterWebWorker(state, payload) {
-      return state.counterWebWorker = payload;
+    setStopwatchWebWorker(state, payload) {
+      return state.stopwatchWebWorker = payload;
     }
   },
 
