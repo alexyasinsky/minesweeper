@@ -7,86 +7,72 @@
   </div>
 </template>
 
-<script>
-import {mapActions, mapGetters, mapMutations} from "vuex";
+<script setup>
 
-export default {
-  name: "MineCell",
-  props: ['id'],
+  import {mapMutations, mapActions, mapGetters} from "../store/tools/map-state.js";
+  import {computed, defineProps} from "vue";
 
-  methods: {
-    ...mapMutations('game', [
-        'setIsGamerWon',
-        'setGameStatus',
-        'decrementMarkedCellsCount',
-        'incrementMarkedCellsCount',
-    ]),
-    ...mapMutations('cells', [
-      'setCellClassName',
-      'toggleCellMarkingStatus'
-    ]),
-    ...mapActions('game', ['stopGame']),
-    ...mapActions('cells', [
-      'openCell',
-      'openAllMinedCells',
-      'checkMarking'
-    ]),
-    rightMouseClickHandler() {
-      if (!this.getCellMarkingStatus(this.id)) {
-        this.incrementMarkedCellsCount();
-        this.toggleCellMarkingStatus(this.id);
-        this.setCellClassName({id: this.id, className: 'marked'});
-        this.checkWinning();
-      } else {
-        this.decrementMarkedCellsCount();
-        this.toggleCellMarkingStatus(this.id);
-        this.setCellClassName({id: this.id, className: 'closed'});
-      }
-    },
-    checkWinning() {
-      if (this.checkHowManyMarksAreLeft()) {
-        this.stopGame();
-        this.checkMarking();
-        if (this.getIsMarkingCorrect) {
-          this.setGameStatus('gamerWon');
-          this.setIsGamerWon(true);
-        } else {
-          this.openAllMinedCells();
-          this.setGameStatus('gamerLoosed');
-          this.setIsGamerWon(false);
-        }
-      }
-    },
+  const props = defineProps({
+    id: String
+  })
 
-    checkHowManyMarksAreLeft() {
-      return this.getMarkedCellsCount - this.getFieldSize === 0
-    },
+  const { setIsGamerWon, setGameStatus, decrementMarkedCellsCount, incrementMarkedCellsCount } = mapMutations('game');
+  const { setCellClassName, toggleCellMarkingStatus } = mapMutations('cells');
 
-    leftMouseClickHandler() {
-      this.openCell(this.id);
-      const className = this.getCellClassName(this.id);
-      if (className === 'mine_activated') {
-        this.setIsGamerWon(false);
-        this.openAllMinedCells();
-        this.stopGame();
-        this.setGameStatus('gamerLoosed');
-      }
-    }
-  },
+  const { stopGame } = mapActions('game');
+  const { openCell, openAllMinedCells, checkMarking } = mapActions('cells');
 
-  computed: {
-    ...mapGetters('game', ['getMarkedCellsCount',]),
-    ...mapGetters('cells', [
-      'getCellClassName',
-      'getCellMarkingStatus',
-      'getFieldSize',
-      'getIsMarkingCorrect'
-    ]),
-    getCellClass() {
-      return `cell cell_small cell_${this.getCellClassName(this.id)}`
+  function rightMouseClickHandler() {
+    if (!getCellMarkingStatus.value(props.id)) {
+      incrementMarkedCellsCount();
+      toggleCellMarkingStatus(props.id);
+      setCellClassName({id: props.id, className: 'marked'});
+      checkWinning();
+    } else {
+      decrementMarkedCellsCount();
+      toggleCellMarkingStatus(props.id);
+      setCellClassName({id: props.id, className: 'closed'});
     }
   }
-}
+
+  function checkWinning() {
+    if (checkHowManyMarksAreLeft()) {
+      stopGame();
+      checkMarking();
+      if (getIsMarkingCorrect) {
+        setGameStatus('gamerWon');
+        setIsGamerWon(true);
+      } else {
+        openAllMinedCells();
+        setGameStatus('gamerLoosed');
+        setIsGamerWon(false);
+      }
+    }
+  }
+
+  function checkHowManyMarksAreLeft() {
+    return getMarkedCellsCount - getFieldSize === 0
+  }
+
+  function leftMouseClickHandler() {
+    openCell(props.id);
+    const className = getCellClassName.value(props.id);
+    if (className === 'mine_activated') {
+      setIsGamerWon(false);
+      openAllMinedCells();
+      stopGame();
+      setGameStatus('gamerLoosed');
+    }
+  }
+
+  const { getMarkedCellsCount } = mapGetters('game');
+
+  const {getCellClassName, getCellMarkingStatus, getFieldSize, getIsMarkingCorrect } = mapGetters('cells');
+
+  const getCellClass = computed(()=> {
+    return `cell cell_small cell_${getCellClassName.value(props.id)}`
+  })
+
 </script>
 
 <style lang="scss" scoped>

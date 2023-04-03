@@ -14,7 +14,7 @@ export default {
 
     startGame({commit, state}) {
       if (state.isGamerWon === undefined && state.stopwatchWebWorker === undefined) {
-        commit('setStopwatchWebWorker', new Worker('src/store/modules/tools/stopwatch-web-worker.js'));
+        commit('setStopwatchWebWorker', new Worker('src/store/tools/stopwatch-web-worker.js'));
         state.stopwatchWebWorker.postMessage(state.stopwatchCount);
         state.stopwatchWebWorker.onmessage = () => {
           return commit('tickStopwatchCount');

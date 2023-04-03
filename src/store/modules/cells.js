@@ -1,4 +1,4 @@
-import {getClosedCellsAround, checkMinesAround} from "./tools/tools.js";
+import {getClosedCellsAround, checkMinesAround} from "../tools/tools.js";
 
 export default {
 

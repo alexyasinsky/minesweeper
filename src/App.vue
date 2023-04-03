@@ -5,27 +5,17 @@
   </div>
     
 </template>
-<script>
+<script setup>
 
 
 import MineField from "./components/MineField.vue";
 import MyHeader from "./components/TheHeader.vue";
-import {mapMutations} from "vuex";
+import {mapMutations} from "./store/tools/map-state.js";
 
-export default {
-  components: {
-    MineField,
-    MyHeader
-  },
+const { setFieldSize } = mapMutations("cells");
 
-  methods: {
-    ...mapMutations('cells', ['setFieldSize']),
-  },
+setFieldSize(10);
 
-  created() {
-    this.setFieldSize(10);
-  }
-}
 
 </script>
 

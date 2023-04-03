@@ -18,25 +18,18 @@
   </div>
   
 </template>
-<script>
+
+<script setup>
+
   import MineCell from "./MineCell.vue";
+  import { mapActions, mapGetters } from "../store/tools/map-state.js";
 
-  import {mapActions, mapGetters} from "vuex";
+  const { startGame } = mapActions('game');
+  const { generateCells } = mapActions('cells');
+  const { getFieldSize } = mapGetters('cells');
 
-  export default {
-    name: "MineField",
-    components: {MineCell},
-    methods: {
-      ...mapActions('game', ['startGame']),
-      ...mapActions('cells', ['generateCells',])
-    },
-    computed: {
-      ...mapGetters('cells', ['getFieldSize']),
-    },
-    created() {
-      this.generateCells();
-    },
-  }
+  generateCells();
+
 </script>
 
 <style lang="scss" scoped>

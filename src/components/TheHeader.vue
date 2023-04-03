@@ -12,25 +12,14 @@
   </header>
 
 </template>
-<script>
-  import {mapGetters} from "vuex";
-  import DigitsView from "./DigitsView.vue";
-  import GameStatus from "./gameStatus.vue";
+<script setup>
+import DigitsView from "./DigitsView.vue";
+import GameStatus from "./gameStatus.vue";
+import {mapGetters} from "../store/tools/map-state.js";
 
-  export default {
-    name: 'MyHeader',
-    components: {GameStatus, DigitsView},
-    methods: {
+const { getFieldSize } = mapGetters('cells');
+const { getMarkedCellsCount, getStopwatchCount } = mapGetters('game');
 
-    },
-    computed: {
-      ...mapGetters('game', [
-        'getMarkedCellsCount',
-        'getStopwatchCount'
-      ]),
-      ...mapGetters('cells', ['getFieldSize']),
-    }
-  }
 </script>
 
 <style lang="scss" scoped>

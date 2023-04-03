@@ -9,39 +9,34 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "DigitsView",
-  components: {},
-  props: {
+<script setup>
+
+  import {computed, defineProps} from "vue";
+  const props = defineProps({
     number: Number,
     digitsQuantity: Number
-  },
-  data() {
-    return {}
-  },
-  methods: {
-    convertStringToArray(str){
-      return str.split('');
-    },
-    increaseDigitsNumber(number) {
-      let numberStr = String(number);
-      const increaseCount = this.digitsQuantity - numberStr.length;
-      if (increaseCount > 0) {
-        for (let i = 1; i <= increaseCount; i++) {
-          numberStr = '0' + numberStr;
-        }
+  })
+
+  function convertStringToArray(str){
+    return str.split('');
+  }
+
+  function increaseDigitsNumber(number) {
+    let numberStr = String(number);
+    const increaseCount = props.digitsQuantity - numberStr.length;
+    if (increaseCount > 0) {
+      for (let i = 1; i <= increaseCount; i++) {
+        numberStr = '0' + numberStr;
       }
-      return numberStr;
     }
-  },
-  computed: {
-    getDigitsArray(){
-      let digits = this.increaseDigitsNumber(this.number);
-      return this.convertStringToArray(digits);
-    }
-  },
-}
+    return numberStr;
+  }
+
+  const getDigitsArray = computed(()=> {
+    let digits = increaseDigitsNumber(props.number);
+    return convertStringToArray(digits);
+  })
+
 </script>
 
 <style lang="scss" scoped>

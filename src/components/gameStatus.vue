@@ -7,45 +7,36 @@
   </div>
 </template>
 
-<script>
-import {mapActions, mapGetters} from "vuex";
 
-export default {
-  name: "gameStatus",
-  methods: {
-    ...mapActions('game', [
-        'startGame',
-        'stopGame',
-        'unsetGameStateToDefault',
-    ]),
-    ...mapActions('cells', ['generateCells']),
-    startNewGame() {
-      this.generateCells();
-      this.unsetGameStateToDefault();
-      this.startGame();
-    }
-  },
-  computed: {
-    ...mapGetters('game', [
-      'getGameStatus',
-      'getIsGamerWon'
-    ]),
-    getButtonHandler(){
-      switch (this.getGameStatus) {
-        case 'beforePlaying':
-          return this.startGame;
-        case 'playing':
-          return this.stopGame;
-        case 'paused':
-          return this.startGame;
-        default:
-          return this.startNewGame;
-      }
-    },
+<script setup>
 
-  },
+import { mapActions, mapGetters} from "../store/tools/map-state.js";
+import {computed} from "vue";
 
+const { startGame, stopGame, unsetGameStateToDefault } = mapActions('game');
+const { generateCells } = mapActions('cells');
+
+function startNewGame() {
+  generateCells();
+  unsetGameStateToDefault();
+  startGame();
 }
+
+const { getGameStatus } = mapGetters('game');
+
+const getButtonHandler = computed(() => {
+  switch (getGameStatus) {
+    case 'beforePlaying':
+      return startGame;
+    case 'playing':
+      return stopGame;
+    case 'paused':
+      return startGame;
+    default:
+      return startNewGame;
+  }
+})
+
 </script>
 
 <style lang="scss" scoped>
