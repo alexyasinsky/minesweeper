@@ -18,8 +18,8 @@ export default {
         state.stopwatchWebWorker.postMessage(state.stopwatchCount);
         state.stopwatchWebWorker.onmessage = () => {
           return commit('tickStopwatchCount');
-      }
-      commit('setGameStatus', 'playing');
+        }
+        commit('setGameStatus', 'playing');
       }
     },
 

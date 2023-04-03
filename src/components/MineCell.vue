@@ -22,6 +22,8 @@
   const { stopGame } = mapActions('game');
   const { openCell, openAllMinedCells, checkMarking } = mapActions('cells');
 
+
+
   function rightMouseClickHandler() {
     if (!getCellMarkingStatus.value(props.id)) {
       incrementMarkedCellsCount();
@@ -39,7 +41,7 @@
     if (checkHowManyMarksAreLeft()) {
       stopGame();
       checkMarking();
-      if (getIsMarkingCorrect) {
+      if (getIsMarkingCorrect.value) {
         setGameStatus('gamerWon');
         setIsGamerWon(true);
       } else {
@@ -51,7 +53,7 @@
   }
 
   function checkHowManyMarksAreLeft() {
-    return getMarkedCellsCount - getFieldSize === 0
+    return getMarkedCellsCount.value - getFieldSize.value === 0
   }
 
   function leftMouseClickHandler() {
@@ -66,7 +68,6 @@
   }
 
   const { getMarkedCellsCount } = mapGetters('game');
-
   const {getCellClassName, getCellMarkingStatus, getFieldSize, getIsMarkingCorrect } = mapGetters('cells');
 
   const getCellClass = computed(()=> {

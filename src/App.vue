@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <myHeader/>
+    <my-header/>
     <mine-field /> 
   </div>
     
@@ -15,7 +15,6 @@ import {mapMutations} from "./store/tools/map-state.js";
 const { setFieldSize } = mapMutations("cells");
 
 setFieldSize(10);
-
 
 </script>
 
