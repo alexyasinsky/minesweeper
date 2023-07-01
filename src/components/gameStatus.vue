@@ -19,7 +19,6 @@ const { generateCells } = mapActions('cells');
 function startNewGame() {
   generateCells();
   unsetGameStateToDefault();
-  startGame();
 }
 
 const { getGameStatus } = mapGetters('game');
