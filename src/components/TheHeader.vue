@@ -1,7 +1,7 @@
 <template>
   <header>
     <digits-view
-        :number="getFieldSize - getMarkedCellsCount"
+        :number="getMarksLeft"
         :digits-quantity="2"
     />
     <game-status/>
@@ -18,7 +18,7 @@
   import {mapGetters} from "../store/tools/map-state.js";
 
   const { getFieldSize } = mapGetters('cells');
-  const { getMarkedCellsCount, getStopwatchCount } = mapGetters('game');
+  const { getMarksLeft, getStopwatchCount } = mapGetters('game');
 </script>
 
 <style lang="scss" scoped>

@@ -3,7 +3,7 @@ export default {
   namespaced: true,
 
   state: {
-    markedCellsCount: 0,
+    marksLeft: 10,
     gameStatus: 'beforePlaying',
     isGamerWon: undefined,
     stopwatchCount: 0,
@@ -33,7 +33,7 @@ export default {
       commit('setIsGamerWon', undefined);
       commit('setGameStatus', 'beforePlaying');
       commit('refreshStopwatchCount');
-      commit('refreshMarkedCellsCount');
+      commit('refreshMarksLeft');
     },
 
   },
@@ -47,16 +47,16 @@ export default {
       return state.stopwatchCount++;
     },
 
-    incrementMarkedCellsCount(state) {
-      return state.markedCellsCount++;
+    incrementMarksLeft(state) {
+      return state.marksLeft++;
     },
 
-    decrementMarkedCellsCount(state) {
-      return state.markedCellsCount--;
+    decrementMarksLeft(state) {
+      return state.marksLeft--;
     },
 
-    refreshMarkedCellsCount(state) {
-      return state.markedCellsCount = 0;
+    refreshMarksLeft(state) {
+      return state.marksLeft = 10;
     },
 
     refreshStopwatchCount(state) {
@@ -74,12 +74,12 @@ export default {
 
   getters: {
 
-    getMarkedCellsCount: state => {
-      return state.markedCellsCount
+    getMarksLeft: state => {
+      return state.marksLeft;
     },
 
     getStopwatchCount: state => {
-      return state.stopwatchCount
+      return state.stopwatchCount;
     },
 
     getGameStatus: state => {

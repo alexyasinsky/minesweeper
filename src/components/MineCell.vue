@@ -16,44 +16,38 @@
     id: String
   })
 
-  const { setIsGamerWon, setGameStatus, decrementMarkedCellsCount, incrementMarkedCellsCount } = mapMutations('game');
+  const { setIsGamerWon, setGameStatus, decrementMarksLeft, incrementMarksLeft } = mapMutations('game');
   const { setCellClassName, toggleCellMarkingStatus } = mapMutations('cells');
 
   const { stopGame } = mapActions('game');
   const { openCell, openAllMinedCells, checkMarking } = mapActions('cells');
 
-
-
   function rightMouseClickHandler() {
     if (!getCellMarkingStatus.value(props.id)) {
-      incrementMarkedCellsCount();
+      decrementMarksLeft();
       toggleCellMarkingStatus(props.id);
       setCellClassName({id: props.id, className: 'marked'});
-      checkWinning();
+      if (getMarksLeft.value === 0) {
+        checkWinning();
+      }
     } else {
-      decrementMarkedCellsCount();
+      incrementMarksLeft();
       toggleCellMarkingStatus(props.id);
       setCellClassName({id: props.id, className: 'closed'});
     }
   }
 
   function checkWinning() {
-    if (checkHowManyMarksAreLeft()) {
-      stopGame();
-      checkMarking();
-      if (getIsMarkingCorrect.value) {
-        setGameStatus('gamerWon');
-        setIsGamerWon(true);
-      } else {
-        openAllMinedCells();
-        setGameStatus('gamerLoosed');
-        setIsGamerWon(false);
-      }
+    stopGame();
+    checkMarking();
+    if (getIsMarkingCorrect.value) {
+      setGameStatus('gamerWon');
+      setIsGamerWon(true);
+    } else {
+      openAllMinedCells();
+      setGameStatus('gamerLoosed');
+      setIsGamerWon(false);
     }
-  }
-
-  function checkHowManyMarksAreLeft() {
-    return getMarkedCellsCount.value - getFieldSize.value === 0
   }
 
   function leftMouseClickHandler() {
@@ -67,8 +61,8 @@
     }
   }
 
-  const { getMarkedCellsCount } = mapGetters('game');
-  const {getCellClassName, getCellMarkingStatus, getFieldSize, getIsMarkingCorrect } = mapGetters('cells');
+  const { getMarksLeft } = mapGetters('game');
+  const {getCellClassName, getCellMarkingStatus, getIsMarkingCorrect } = mapGetters('cells');
 
   const getCellClass = computed(()=> {
     return `cell cell_small cell_${getCellClassName.value(props.id)}`

@@ -82,18 +82,23 @@ export default {
     toggleIsMarkingCorrect(state) {
       return state.isMarkingCorrect = !state.isMarkingCorrect;
     },
+
     setFieldSize(state, payload) {
       return state.fieldSize = payload
     },
+
     setCells(state, payload) {
       return state.cells = payload;
     },
-    toggleCellCloseStatus(state, payload) {
-      return state.cells[payload].isClosed = !state.cells[payload].isClosed;
-    },
+
     setCellClassName(state, payload) {
       return state.cells[payload.id].className = payload.className;
     },
+
+    toggleCellCloseStatus(state, payload) {
+      return state.cells[payload].isClosed = !state.cells[payload].isClosed;
+    },
+
     toggleCellMarkingStatus(state, payload) {
       return state.cells[payload].isMarked = !state.cells[payload].isMarked;
     },
