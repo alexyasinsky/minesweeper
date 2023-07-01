@@ -13,13 +13,12 @@
 
 </template>
 <script setup>
-import DigitsView from "./DigitsView.vue";
-import GameStatus from "./gameStatus.vue";
-import {mapGetters} from "../store/tools/map-state.js";
+  import DigitsView from "./DigitsView.vue";
+  import GameStatus from "./gameStatus.vue";
+  import {mapGetters} from "../store/tools/map-state.js";
 
-const { getFieldSize } = mapGetters('cells');
-const { getMarkedCellsCount, getStopwatchCount } = mapGetters('game');
-
+  const { getFieldSize } = mapGetters('cells');
+  const { getMarkedCellsCount, getStopwatchCount } = mapGetters('game');
 </script>
 
 <style lang="scss" scoped>

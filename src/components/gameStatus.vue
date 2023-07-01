@@ -24,8 +24,9 @@ function startNewGame() {
 
 const { getGameStatus } = mapGetters('game');
 
+
 const getButtonHandler = computed(() => {
-  switch (getGameStatus) {
+  switch (getGameStatus.value) {
     case 'beforePlaying':
       return startGame;
     case 'playing':

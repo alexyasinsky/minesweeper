@@ -33,6 +33,7 @@ export default {
       commit('setIsGamerWon', undefined);
       commit('setGameStatus', 'beforePlaying');
       commit('refreshStopwatchCount');
+      commit('refreshMarkedCellsCount');
     },
 
   },
@@ -52,6 +53,10 @@ export default {
 
     decrementMarkedCellsCount(state) {
       return state.markedCellsCount--;
+    },
+
+    refreshMarkedCellsCount(state) {
+      return state.markedCellsCount = 0;
     },
 
     refreshStopwatchCount(state) {

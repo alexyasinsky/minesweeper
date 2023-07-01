@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <myHeader/>
-    <mine-field /> 
+    <mine-field/>
   </div>
     
 </template>

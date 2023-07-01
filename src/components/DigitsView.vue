@@ -12,14 +12,16 @@
 <script setup>
 
   import {computed, defineProps} from "vue";
+
   const props = defineProps({
     number: Number,
     digitsQuantity: Number
   })
 
-  function convertStringToArray(str){
-    return str.split('');
-  }
+  const getDigitsArray = computed(()=> {
+    let digits = increaseDigitsNumber(props.number);
+    return convertStringToArray(digits);
+  })
 
   function increaseDigitsNumber(number) {
     let numberStr = String(number);
@@ -32,10 +34,9 @@
     return numberStr;
   }
 
-  const getDigitsArray = computed(()=> {
-    let digits = increaseDigitsNumber(props.number);
-    return convertStringToArray(digits);
-  })
+  function convertStringToArray(str){
+    return str.split('');
+  }
 
 </script>
 
