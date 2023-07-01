@@ -46,7 +46,7 @@ export default {
     openCell({commit, state, dispatch}, id) {
       commit('toggleCellCloseStatus', id);
       if (state.cells[id].isMined) {
-        return commit('setCellClassName', {id, className: 'mine_activated'});
+        return commit('setCellClassName', {id, className: 'mine-activated'});
       }
       const closedCellsAround = getClosedCellsAround(id, state.cells, state.fieldSize);
       const minesAroundAmount = checkMinesAround(closedCellsAround, state.cells);
@@ -71,6 +71,9 @@ export default {
       for (let cell in state.cells) {
         if (state.cells[cell].isClosed && state.cells[cell].isMined) {
           commit('setCellClassName', {id: state.cells[cell].id, className: 'mine'});
+        }
+        if (state.cells[cell].isMarked && !state.cells[cell].isMined) {
+          commit('setCellClassName', {id: state.cells[cell].id, className: 'mine-wrongly-marked'});
         }
       }
     },

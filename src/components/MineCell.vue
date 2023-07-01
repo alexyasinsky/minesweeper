@@ -19,8 +19,17 @@
   const { setIsGamerWon, setGameStatus, decrementMarksLeft, incrementMarksLeft } = mapMutations('game');
   const { setCellClassName, toggleCellMarkingStatus } = mapMutations('cells');
 
-  const { stopGame } = mapActions('game');
+  const { finishGame } = mapActions('game');
   const { openCell, openAllMinedCells, checkMarking } = mapActions('cells');
+
+
+  function leftMouseClickHandler() {
+    openCell(props.id);
+    const className = getCellClassName.value(props.id);
+    if (className === 'mine-activated') {
+      finishGameWithLoosing();
+    }
+  }
 
   function rightMouseClickHandler() {
     if (!getCellMarkingStatus.value(props.id)) {
@@ -38,30 +47,27 @@
   }
 
   function checkWinning() {
-    stopGame();
     checkMarking();
     if (getIsMarkingCorrect.value) {
-      setGameStatus('gamerWon');
-      setIsGamerWon(true);
+      finishGameWithWinning()
     } else {
-      openAllMinedCells();
-      setGameStatus('gamerLoosed');
-      setIsGamerWon(false);
+      finishGameWithLoosing()
     }
   }
 
-  function leftMouseClickHandler() {
-    openCell(props.id);
-    const className = getCellClassName.value(props.id);
-    if (className === 'mine_activated') {
-      setIsGamerWon(false);
-      openAllMinedCells();
-      stopGame();
-      setGameStatus('gamerLoosed');
-    }
+  function finishGameWithWinning() {
+    finishGame('gamerWon');
+    setIsGamerWon(true);
+  }
+
+  function finishGameWithLoosing() {
+    finishGame('gamerLoosed');
+    setIsGamerWon(false);
+    openAllMinedCells();
   }
 
   const { getMarksLeft } = mapGetters('game');
+
   const {getCellClassName, getCellMarkingStatus, getIsMarkingCorrect } = mapGetters('cells');
 
   const getCellClass = computed(()=> {
@@ -86,7 +92,7 @@
     &_marked {
       background-position: -34px 34px;
     }
-    &_question_closed {
+    &_question-closed {
       background-position: -51px 34px;
     }
     &_question {
@@ -95,10 +101,10 @@
     &_mine {
       background-position: -85px 34px;
     }
-    &_mine_activated {
+    &_mine-activated {
       background-position: -102px 34px;
     }
-    &_mine_deactivated {
+    &_mine-wrongly-marked {
       background-position: -119px 34px;
     }
     &_1 {

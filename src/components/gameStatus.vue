@@ -13,7 +13,7 @@
 import { mapActions, mapGetters} from "../store/tools/map-state.js";
 import {computed} from "vue";
 
-const { startGame, stopGame, unsetGameStateToDefault } = mapActions('game');
+const { startGame, pauseGame, unsetGameStateToDefault } = mapActions('game');
 const { generateCells } = mapActions('cells');
 
 function startNewGame() {
@@ -29,7 +29,7 @@ const getButtonHandler = computed(() => {
     case 'beforePlaying':
       return startGame;
     case 'playing':
-      return stopGame;
+      return pauseGame;
     case 'paused':
       return startGame;
     default:

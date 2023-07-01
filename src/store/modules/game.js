@@ -12,29 +12,44 @@ export default {
 
   actions: {
 
-    startGame({commit, state}) {
-      if (state.isGamerWon === undefined && state.stopwatchWebWorker === undefined) {
-        commit('setStopwatchWebWorker', new Worker('src/store/tools/stopwatch-web-worker.js'));
-        state.stopwatchWebWorker.postMessage(state.stopwatchCount);
-        state.stopwatchWebWorker.onmessage = () => {
-          return commit('tickStopwatchCount');
-        }
-        commit('setGameStatus', 'playing');
+    startGame({commit, dispatch}) {
+      commit('setGameStatus', 'playing');
+      dispatch('addStopwatchWebWorker');
+    },
+
+    pauseGame({commit, dispatch}) {
+      commit('setGameStatus', 'paused');
+      dispatch('deleteStopwatchWebWorker');
+    },
+
+    finishGame({commit, dispatch}, gameStatus) {
+      commit('setGameStatus', gameStatus);
+      dispatch('deleteStopwatchWebWorker');
+    },
+
+    addStopwatchWebWorker({commit, state}) {
+      commit('setStopwatchWebWorker', new Worker('src/store/tools/stopwatch-web-worker.js'));
+      state.stopwatchWebWorker.postMessage(state.stopwatchCount);
+      state.stopwatchWebWorker.onmessage = () => {
+        return commit('tickStopwatchCount');
       }
     },
 
-    stopGame({commit, state}) {
-      commit('setGameStatus', 'paused');
+    deleteStopwatchWebWorker({commit, state}) {
       state.stopwatchWebWorker.terminate();
       commit('setStopwatchWebWorker', undefined);
     },
 
+
     unsetGameStateToDefault({commit}) {
-      commit('setIsGamerWon', undefined);
-      commit('setGameStatus', 'beforePlaying');
-      commit('refreshStopwatchCount');
       commit('refreshMarksLeft');
+      commit('setGameStatus', 'beforePlaying');
+      commit('setIsGamerWon', undefined);
+      commit('refreshStopwatchCount');
     },
+
+
+
 
   },
 

@@ -1,8 +1,9 @@
 
 <template>
-  <div class="field"
-       @click.once ="startGame"
-       @contextmenu.once="startGame"
+  <div
+      class="field"
+      @click="clickOnFieldHandler"
+      @contextmenu="clickOnFieldHandler"
   >
     <div 
     class="row" 
@@ -22,13 +23,23 @@
 <script setup>
 
   import MineCell from "./MineCell.vue";
+
   import { mapActions, mapGetters } from "../store/tools/map-state.js";
 
   const { startGame } = mapActions('game');
   const { generateCells } = mapActions('cells');
   const { getFieldSize } = mapGetters('cells');
+  const { getGameStatus } = mapGetters('game');
 
   generateCells();
+
+  function clickOnFieldHandler() {
+    if (getGameStatus.value === 'beforePlaying') {
+      startGame();
+    }
+  }
+
+
 
 </script>
 
