@@ -5,7 +5,6 @@ export default {
   state: {
     marksLeft: 10,
     gameStatus: 'beforePlaying',
-    isGamerWon: undefined,
     stopwatchCount: 0,
     stopwatchWebWorker: undefined
   },
@@ -22,9 +21,12 @@ export default {
       dispatch('deleteStopwatchWebWorker');
     },
 
-    finishGame({commit, dispatch}, gameStatus) {
+    finishGame({commit, dispatch, state}, gameStatus) {
       commit('setGameStatus', gameStatus);
-      dispatch('deleteStopwatchWebWorker');
+      if (state.stopwatchWebWorker !== undefined) {
+        dispatch('deleteStopwatchWebWorker');
+      }
+
     },
 
     addStopwatchWebWorker({commit, state}) {
@@ -44,12 +46,8 @@ export default {
     unsetGameStateToDefault({commit}) {
       commit('refreshMarksLeft');
       commit('setGameStatus', 'beforePlaying');
-      commit('setIsGamerWon', undefined);
       commit('refreshStopwatchCount');
     },
-
-
-
 
   },
 
@@ -78,10 +76,6 @@ export default {
       return state.stopwatchCount = 0;
     },
 
-    setIsGamerWon(state, payload) {
-      return state.isGamerWon = payload;
-    },
-
     setStopwatchWebWorker(state, payload) {
       return state.stopwatchWebWorker = payload;
     }
@@ -101,9 +95,6 @@ export default {
       return state.gameStatus;
     },
 
-    getIsGamerWon: state => {
-      return state.isGamerWon;
-    },
 
   }
 }

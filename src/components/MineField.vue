@@ -34,6 +34,7 @@
   generateCells();
 
   function clickOnFieldHandler() {
+    console.log(getGameStatus.value);
     if (getGameStatus.value === 'beforePlaying') {
       startGame();
     }

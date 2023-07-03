@@ -39,6 +39,7 @@ export default {
       }
       ids.forEach(id => {
         cells[id].isMined = true;
+        console.log(id);
       })
       commit('setCells', cells);
     },

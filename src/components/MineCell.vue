@@ -16,7 +16,7 @@
     id: String
   })
 
-  const { setIsGamerWon, setGameStatus, decrementMarksLeft, incrementMarksLeft } = mapMutations('game');
+  const { decrementMarksLeft, incrementMarksLeft } = mapMutations('game');
   const { setCellClassName, toggleCellMarkingStatus } = mapMutations('cells');
 
   const { finishGame } = mapActions('game');
@@ -24,6 +24,7 @@
 
 
   function leftMouseClickHandler() {
+    console.log('cell');
     openCell(props.id);
     const className = getCellClassName.value(props.id);
     if (className === 'mine-activated') {
@@ -57,12 +58,10 @@
 
   function finishGameWithWinning() {
     finishGame('gamerWon');
-    setIsGamerWon(true);
   }
 
   function finishGameWithLoosing() {
     finishGame('gamerLoosed');
-    setIsGamerWon(false);
     openAllMinedCells();
   }
 
